@@ -7,52 +7,122 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             text-align: center;
+            background-color: #fef3f3;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #ff6b81;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .card {
+            background: white;
+            padding: 15px;
+            margin: 10px auto;
+            border-radius: 10px;
+            box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        .loading {
+            font-size: 16px;
+            color: #888;
+            margin-top: 10px;
         }
         canvas {
             max-width: 600px;
-            margin: auto;
+            margin: 20px auto;
         }
     </style>
 </head>
 <body>
 
-    <h2>Rotary Election Leaderboard</h2>
+    <h2>Rotary Election Leaderboard 2025</h2>
+    
+    <div class="card">
+        <p class="loading">Fetching latest votes...</p>
+    </div>
+
     <canvas id="leaderboardChart"></canvas>
 
     <script>
+        let myChart;
+
         async function fetchLeaderboard() {
-            const response = await fetch("https://script.google.com/macros/s/AKfycbxrADDF7Yc_cEO5iPjXCwyO-JlaAQI3_tZroVhhMD4OR3BC0akqN-_rHtC9XOqLQBcEUw/exec");
-            const data = await response.json();
+            const loadingText = document.querySelector('.loading');
+            loadingText.textContent = "Fetching latest votes...";
 
-            const candidates = data.map(entry => entry[0]);
-            const votes = data.map(entry => entry[1]);
+            try {
+                const response = await fetch("https://script.google.com/macros/s/AKfycbwd_ljiybR-os3zXn7ydvpcn19yWrbMjo3bPLSUr1YPXqfs-YkwkH4o-babAi5vSOmtMQ/exec");
+                const data = await response.json();
 
-            const ctx = document.getElementById('leaderboardChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: candidates,
-                    datasets: [{
-                        label: 'Votes',
-                        data: votes,
-                        backgroundColor: 'blue',
-                        borderColor: 'black',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                const positions = data.map(entry => entry.position);
+                const candidates = data.map(entry => entry.candidate);
+                const votes = data.map(entry => entry.votes);
+
+                const ctx = document.getElementById('leaderboardChart').getContext('2d');
+
+                if (myChart) {
+                    myChart.data.labels = positions;
+                    myChart.data.datasets[0].data = votes;
+                    myChart.update(); // Update existing chart
+                } else {
+                    myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: positions,
+                            datasets: [{
+                                label: 'Votes',
+                                data: votes,
+                                backgroundColor: ['#ff6b81', '#ff85a2', '#ffa4b8', '#ffbfd2'],
+                                borderColor: '#ff4d6d',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            animation: {
+                                duration: 1000,
+                                easing: 'easeInOutQuad'
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            return `${candidates[context.dataIndex]}: ${votes[context.dataIndex]} votes`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        font: { weight: 'bold' }
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        font: { weight: 'bold' }
+                                    }
+                                }
+                            }
                         }
-                    }
+                    });
                 }
-            });
+
+                loadingText.textContent = "Leaderboard updated";
+            } catch (error) {
+                console.error("Error fetching leaderboard data:", error);
+                loadingText.textContent = "Error fetching data!";
+            }
         }
 
         fetchLeaderboard();
+        setInterval(fetchLeaderboard, 10000); // Auto-refresh every 10 seconds
     </script>
 
 </body>
