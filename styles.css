@@ -1,0 +1,143 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+h2 {
+    color: #1F4E79;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+.rotary-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.rotary-logo {
+    height: 50px;
+}
+.leaderboard-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: center;
+    max-width: 1200px;
+    margin: auto;
+}
+.chart-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: 5px solid #1F4E79;
+}
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+.button-group {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.action-btn {
+    background: #1F4E79;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+.action-btn:hover {
+    background: #2E75B6;
+}
+#summaryModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+.summary-content {
+    background: white;
+    margin: 5% auto;
+    padding: 30px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    border-radius: 10px;
+    position: relative;
+    overflow-y: auto;
+}
+.close-btn {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #1F4E79;
+}
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.summary-table th {
+    background: #1F4E79;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+.summary-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+.summary-table tr:hover {
+    background-color: #f5f5f5;
+}
+.loading {
+    font-size: 16px;
+    color: #888;
+    margin-bottom: 15px;
+}
+#printable-report {
+    display: none;
+}
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #printable-report, #printable-report * {
+        visibility: visible;
+    }
+    #printable-report {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+    }
+    .print-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .print-position {
+        margin: 15px 0;
+        text-align: left;
+    }
+}
